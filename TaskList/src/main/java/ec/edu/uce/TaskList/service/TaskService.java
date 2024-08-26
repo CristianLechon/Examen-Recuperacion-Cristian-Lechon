@@ -22,8 +22,8 @@ public class TaskService {
     }
 
     //Crear
-    public void save(Task task){
-        taskRepository.save(task);
+    public Task save(Task task){
+       return taskRepository.save(task);
     }
 
     //Eliminar
@@ -32,18 +32,23 @@ public class TaskService {
     }
 
     //Actualizar
-    public Optional<Task> updateTask(Long id, Task task){
+    public Optional<Task> updateTask(Long id, Task task) {
         Optional<Task> result = taskRepository.findById(id);
-        if (result.isPresent()){
-            taskRepository.save(task);
-        }else {
-            System.out.println("No actualizado, no encontrado.");
-        }
-        return result;
-    }
 
-    public Optional<Task> findById(Long id, Task task) {
-        return taskRepository.findById(id);
+        if (result.isPresent()) {
+            Task existingTask = result.get();
+
+            existingTask.setTittle(task.getTittle());
+            existingTask.setDescription(task.getDescription());
+            existingTask.setDateCreation(task.getDateCreation());
+            existingTask.setState(task.getState());
+
+            taskRepository.save(existingTask);
+            return Optional.of(existingTask);
+        } else {
+            System.out.println("No actualizado, no encontrado.");
+            return Optional.empty();
+        }
     }
 
     public List<Task> findByState(String state){

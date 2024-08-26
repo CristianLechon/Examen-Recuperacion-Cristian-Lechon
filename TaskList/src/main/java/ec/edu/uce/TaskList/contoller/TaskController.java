@@ -3,6 +3,7 @@ package ec.edu.uce.TaskList.contoller;
 import ec.edu.uce.TaskList.model.Task;
 import ec.edu.uce.TaskList.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serial;
@@ -25,6 +26,25 @@ public class TaskController {
     @GetMapping(value = "/{state}")
     public List<Task> getFindState(@PathVariable String state) {
         return taskService.findByState(state);
+    }
+
+    //Guardar
+    @PostMapping(value = "/save")
+    public ResponseEntity<Task> createTask(@RequestBody Task task){
+        return ResponseEntity.ok(taskService.save(task));
+    }
+
+    //Actualizar
+    @PutMapping("/{id}")
+    public ResponseEntity<Optional<Task>> updateTask(@PathVariable Long id, @RequestBody Task task) {
+        return ResponseEntity.ok(taskService.updateTask(id, task));
+    }
+
+    //Eliminar
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }
 
